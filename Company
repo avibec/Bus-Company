@@ -1,0 +1,352 @@
+public class Company {
+
+    private int numberOfBus = 0, numberOfLines = 0, numberOfDates = 0, numOfRides = 0;
+    private Bus[] allBus = new Bus[100];
+    private String companyName;
+    private Lines[] allLines = new Lines[50];
+    private Schedule[] allDates = new Schedule[1000];
+    private Ride[] allRides = new Ride[1000];
+
+
+    //Create a new company with number of buses
+    public Company(String companyName) {
+        setCompanyName(companyName);
+
+    }
+    //--------------Buses-----------------------------------------------
+
+
+    //Create a number of buses with random seats and licenses
+    //and add them to the company
+    public void busLicense(int num) {
+    	
+        for (int i = 0; i < num; i++) {
+            String licenese;
+            int seat = (int) (Math.random() * 65) + 15;
+            licenese = createId();
+            allBus[numberOfBus++] = new Bus(licenese, seat);
+        }
+    }
+
+    private Bus busLicense() {
+    	  int ran =(int) (Math.random() * 100);
+          if (numberOfBus == 99) {
+              return allBus[ran];
+          }
+        String licenese;
+        int seat = (int) (Math.random() * 65) + 15;
+        licenese = createId();
+        Bus bus = new Bus(licenese, seat);
+        allBus[numberOfBus++] = bus;
+        return bus;
+    }
+
+    //Check license from createId
+    private String checkId(String id) {
+        if (allBus[0] != null) {
+            for (int i = 0; i < numberOfBus; i++) {
+                if (allBus[i].getLicensePlate().equals(id)) {
+                    return createId();
+                }
+            }
+        }
+        return id;
+    }
+
+    //Creating a bus license (xx-xxx-xx)
+    private String createId() {
+        String middle = "", last = "";
+
+        int firstTwoNumbers = (int) ((Math.random() * 90) + 10);  // start from 10 to 99
+        int middleNumbers = (int) (Math.random() * 999);
+        int lastTwoNumbers = (int) (Math.random() * 99);
+
+        if (middleNumbers < 10) {
+            middle = "00" + middleNumbers;
+        } else if (middleNumbers > 9 && middleNumbers < 100) {
+            middle = "0" + middleNumbers;
+        } else {
+            middle = "" + middleNumbers;
+        }
+
+        if (lastTwoNumbers < 10) {
+            last = "0" + lastTwoNumbers;
+        } else {
+            last = "" + lastTwoNumbers;
+        }
+
+        String id = firstTwoNumbers + "-" + middle + "-" + last;
+        return checkId(id);
+    }
+
+    //Add new bus to the company
+    public void addBus(Bus bus) {
+        if (numberOfBus < 99) {
+            if (isBusExist(bus.getLicensePlate())) {
+                for (int i = 0; i < numberOfBus + 1; i++) {
+                    if (allBus[i] == null) {
+                        allBus[i] = bus;
+                        numberOfBus++;
+                        break;
+                    }
+                }
+            } else {
+                System.err.println("this bus is already in the company");
+            }
+        }
+    }
+
+
+    //Remove a bus from the company
+    public void removeBus(String busLicense) {
+        for (int i = 0; i < numberOfBus; i++) {
+            if (allBus[i].getLicensePlate() == busLicense) {
+                for (int j = i; j < numberOfBus - 1; j++)
+                    allBus[j] = allBus[j + 1];
+            }
+        }
+        allBus[numberOfBus--] = null;
+    }
+
+    //Checks whether the bus is in the system or not
+    private boolean isBusExist(String license) {
+        for (int i = 0; i < numberOfBus; i++) {
+            if (allBus[i].getLicensePlate() == license) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void showBus() {
+        for (int i = 0; i < numberOfBus; i++) {
+            System.out.println(allBus[i]);
+        }
+    }
+
+    //-------------------Lines---------------------------------------------------------
+
+    //Add new line only if the line does not appear in the company's lines
+    public void addLine(Lines line) {
+        boolean flag = true;
+        for (int i = 0; i < numberOfLines; i++) {
+        	boolean equalsLine = line.toString().equals(allLines[i].toString());
+            if (equalsLine) {
+                flag = false;
+            }
+        }
+        if (flag) {
+            allLines[numberOfLines++] = line;
+        } else {
+            System.err.println("SYSTEM ERROR: this line is already exist");
+        }
+    }
+
+    public void randomLines(int num) {
+        if (num > 0 && num < 50) {
+            for (int i = 0; i < num; i++) {
+                createLine();
+            }
+        }
+    }
+    
+    //Create a new random line
+    private Lines createLine() {
+    	if(numberOfLines > 49) {return allLines[(int) (Math.random() * 50)];}
+        Lines.city[] cities = Lines.city.values();
+        Lines.city destination = cities[(int) (Math.random() * cities.length)];
+        Lines.city startingPoint = cities[(int) (Math.random() * cities.length)];
+        int num = (int) (Math.random() * 999) + 1;
+        Lines newline = new Lines(startingPoint, destination, num);
+        addLine(newline);
+        return newline;
+    }
+
+
+    public void showLines() {
+        for (int i = 0; i < numberOfLines; i++) {
+            System.out.printf("start: %13s    destination: %13s    line: %6s ", allLines[i].getStartingPoint(), allLines[i].getDestination(), allLines[i].getLineNumber());
+            System.out.println();
+        }
+    }
+
+    //------------------Schedule----------------------------------------------------------
+    //Add new date
+    private boolean checkAddDate(Schedule schedule) {
+        if (isValidDate(schedule.getDay(), schedule.getMonth(), schedule.getHours(), schedule.getMinutes())) {
+            allDates[numberOfDates++] = schedule;
+            return true;
+        }
+        return false;
+    }
+
+    //Add and check new date to date array
+    public void addDate(Schedule schedule) {
+        if (isValidDate(schedule.getDay(), schedule.getMonth(), schedule.getHours(), schedule.getMinutes())) {
+            allDates[numberOfDates++] = schedule;
+        }
+    }
+
+
+    //make random date
+    public Schedule createRandomDate() {
+        int day = (int) (Math.random() * 31) + 1;
+        int month = (int) (Math.random() * 12) + 1;
+        int hours = (int) (Math.random() * 24);
+        int minutes = (int) (Math.random() * 60);
+        Schedule date = new Schedule(day, month, hours, minutes);
+
+        if (checkAddDate(date)) {
+            return date;
+        }
+        return createRandomDate();
+    }
+
+    //create number of dates
+    public void createDates(int num) {
+        int temp = numberOfDates;
+        if (num <= 1000 - numberOfDates && num > 0) {
+            do {
+                createRandomDate();
+            } while (numberOfDates < num + temp);
+        } else System.out.println("Too many dates!");
+    }
+
+    //Checking if the date and the time is valid date
+    private boolean isValidDate(int day, int month, int hours, int minutes) {
+    	boolean legalDay =(day > 0 && day <= 31);
+    	boolean leaglMonth = (month > 0 && month <= 12);
+    	boolean leaglHour = (hours >= 0 && hours < 24);
+    	boolean leaglMinutes = (minutes >= 0 && minutes < 60);
+        if (legalDay && leaglMonth && leaglHour && leaglMinutes) {
+            if (month == 4 || month == 6 || month == 9 || month == 11) {
+                if (day > 30) {
+                    System.err.println("Invalid Date: can only be 30 days in this month");
+                    return false;
+                }
+            } else if (month == 2) {
+                if (day > 28) {
+                    System.err.println("Invalid Date: can only be 28 days in this month");
+                    return false;
+                }
+            }
+            return true;
+        }
+        System.err.println("Invalid Date");
+        return false;
+    }
+
+    public void showDate() {
+        for (int i = 0; i < numberOfDates; i++) {
+            System.out.println(allDates[i]);
+        }
+    }
+
+
+    //---------------------Ride---------------------------------------------
+    //add random ride
+    public void addRide(Ride ride) {
+        if (isValidBus(ride) && isValidRide(ride)) {
+            allRides[numOfRides++] = ride;
+        }
+    }
+    
+    
+
+    //create random ride
+    private Ride createRide() {
+        Lines lines = createLine();
+        Schedule date = createRandomDate();
+        Bus bus = busLicense();
+        Ride ride = new Ride(lines, bus, date);
+        allRides[numOfRides++] = ride;
+        return ride;
+    }
+
+    //create random rides
+    public void createRides(int num) {
+        int temp = numOfRides;
+        if (num <= 1000 - numOfRides && num > 0) {
+            do {
+                createRide();
+            } while (numOfRides < num + temp);
+        } else System.out.println("To many rides!");
+    }
+
+    //remove ride
+    public void removeRide(int num) {
+        for (int i = 0; i < numOfRides; i++) {
+            if (num == allRides[i].getId()) {
+                allRides[i] = allRides[numOfRides-1];
+                allRides[numOfRides--] = null;
+            }
+        }
+    }
+
+
+    //Check if the bus is available
+    private boolean isValidBus(Ride ride) {
+        for (int i = 0; i < numOfRides; i++) {
+        	boolean equalsBusRide = (allRides[i].getBus().toString().equals(ride.getBus().toString()));
+            boolean equalsDateRide = (allRides[i].getDate().toString().equals(ride.getDate().toString()));
+        	if (equalsBusRide) {
+                if (equalsDateRide) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    //Check if the Line is available
+    private boolean isValidRide(Ride ride) {
+        for (int i = 0; i < numOfRides; i++) {
+        	boolean equalsLineRide = (allRides[i].getLine().toString().equals(ride.getLine().toString()));
+        	boolean equalsDateRide = (allRides[i].getDate().toString().equals(ride.getDate().toString()));
+            if (equalsLineRide) {
+                if (equalsDateRide) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void showRides() {
+        for (int i = 0; i < numOfRides; i++) {
+            System.out.println(i+1 + ")  " + allRides[i]);
+        }
+    }
+    
+    public String getCompanyName() {
+        return companyName;
+    }
+    public Bus[] getAllBus() {
+        return allBus;
+    }
+    public int getNumberOfBus() {
+        return numberOfBus;
+    }
+    public void setCompanyName(String name) {
+        this.companyName = name;
+    }
+    public void setNumberOfBus(int number) {
+        if (number >= 0 && number < 101) {
+            this.numberOfBus = number;
+        } else {
+            System.err.println("Not a number between 0 to 100");
+        }
+    }
+	public Lines[] getAllLines() {
+		return allLines;
+	}
+	public Schedule[] getAllDates() {
+		return allDates;
+	}
+	public Ride getAllRides(int id) {
+		return allRides[id];
+	}
+	public void setAllRides(Ride[] allRides) {
+		this.allRides = allRides;
+	}
+}
