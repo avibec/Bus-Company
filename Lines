@@ -1,0 +1,52 @@
+public class Lines {
+	
+	public  enum city{
+	        Afula, Akko, Arad, Ashdod, Ashkelon, Bat_Yam, Beer_Sheva, Bet_Shean, Bnei_Brak,
+	        Caecarea, Dimona, Dor, Elat, En_Gedi, Givataim, Hadera, Haifa, Herzeliyya,
+	        Holon, Jerusalem, Karmiel, Kefar_Sava, Lod, Meron, Nehariyya, Nezareth, Netanya,
+	        Petah_Tiqwa, Qiryat_Smona, Ramat_Gan, Ramla, Rehovot, Rishon_Lezion, Tel_Aviv_Yafo,
+	        Tiberias, Zefat
+	
+	}
+	
+	private city startingPoint;
+	private city destination;
+	private int lineNumber;
+	
+	public Lines(city startingPoint, city destination, int lineNumber) {
+		this.startingPoint = startingPoint;
+		this.destination = destination;
+		this.lineNumber = lineNumber;
+	}
+	
+	public city getStartingPoint() {
+		return startingPoint;
+	}
+	
+	public void setStartingPoint(city startingPoint) {
+		this.startingPoint = startingPoint;
+	}
+	
+	public city getDestination() {
+		return destination;
+	}
+	
+	public void setDestination(city destination) {
+		this.destination = destination;
+	}
+	
+	public int getLineNumber() {
+		return lineNumber;
+	}
+	
+	public void setLineNumber(int lineNumber) {
+		this.lineNumber = lineNumber;
+	}
+	
+	public String toString() {
+		return "Line startingPoint: " + startingPoint +
+	        " destination: " + destination +
+	        "\tlineNumber: " + lineNumber;
+	}
+		
+}
