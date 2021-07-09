@@ -1,0 +1,290 @@
+public class Menu {
+
+    private Company company;
+
+    //Create company and choose name
+    public void welcome() {
+        Scanner s = new Scanner(System.in);
+        System.out.println("Welcome to the bus company program manager");
+        System.out.println("Please choose a name for your company");
+        String companyName = s.nextLine();
+        this.company = new Company(companyName);
+        System.out.println("The name of your company is " + companyName);
+
+        chooseTask();
+    }
+
+    //Method to choose a task(create \ delete \ show \ exit)
+    private void chooseTask() {
+        Scanner s = new Scanner(System.in);
+        System.out.println("Please choose one of the options below:\n");
+        System.out.println("1) Create objects to your company");
+        System.out.println("2) Delete object from your company");
+        System.out.println("3) Show buses, lines, dates or rides");
+        System.out.println("4) Change object");
+        System.out.println("5) Exit from menu");
+        int selected;
+        do {
+            selected = s.nextInt();
+            if (selected < 0 || selected > 5) {
+                System.out.println("Invalid option");
+            }
+        } while (selected < 0 || selected > 5);
+         
+        switch (selected) {
+            case 1:
+                randomOrNot();
+                break;
+            case 2:
+                delete();
+                break;
+            case 3:
+                showAll();
+                break;
+            case 4:
+                change();
+                break;
+            case 5:
+                System.exit(0);
+        }
+
+    }
+
+    //in case of create, choose whether you want to create custom or manual
+    private void randomOrNot() {
+        Scanner s = new Scanner(System.in);
+        System.out.println("You can choose how you want to start building your company");
+        System.out.println("Do you prefer random or custom made creation?");
+        System.out.println("1) I prefer Random selection");
+        System.out.println("2) I prefer custom selection");
+        int selected;
+        do {
+            selected = s.nextInt();
+            if (selected < 0 || selected > 2) {
+                System.out.println("Invalid option");
+            }
+        } while (selected < 0 || selected > 2);
+         
+        switch (selected) {
+            case 1:
+                randomSelected();
+                break;
+            case 2:
+                customSelected();
+        }
+    }
+
+    //in case of random, choose what you want to create
+    private void randomSelected() {
+        Scanner s = new Scanner(System.in);
+        System.out.println("Select a number from the options below:");
+        System.out.println("1) create random rides (recommended).");
+        System.out.println("2) create random bus");
+        System.out.println("3) create random line");
+        System.out.println("4) create random date");
+        System.out.println("5) Return to main menu");
+        int selected; 
+        do {
+            selected = s.nextInt();
+            if (selected < 0 || selected > 4) {
+                System.out.println("Invalid option");
+            }
+        } while (selected < 0 || selected > 4);
+         
+        switch (selected) {
+            case 1:
+                System.out.println("Enter number of rides you want to create\n");
+                int numOfRides = s.nextInt();
+                this.company.createRides(numOfRides);
+                this.company.showRides();
+                break;
+            case 2:
+                System.out.println("Enter number of buses you want to create\n");
+                int numOfBuses = s.nextInt();
+                this.company.busLicense(numOfBuses);
+                this.company.showBus();
+                break;
+            case 3:
+                System.out.println("Enter number of lines you want to create\n");
+                int numOfLines = s.nextInt();
+                this.company.randomLines(numOfLines);
+                this.company.showLines();
+                break;
+            case 4:
+                System.out.println("Enter number of dates you want to create\n");
+                int numOfDates = s.nextInt();
+                this.company.createDates(numOfDates);
+                this.company.showDate();
+                break;
+            case 5:
+                chooseTask();
+        }
+        chooseTask();
+    }
+
+    //create custom ride
+    private void customSelected() {
+        Scanner s = new Scanner(System.in);
+        System.out.println("For a ride you will need a bus, a line and a date.");
+        System.out.println("We will start from the bus, please enter licence plate" +
+                "in a string format \"XX-XXX-XX\" ");
+        String licencePlate = s.nextLine();
+        System.out.println("Now when we have the licence plate number" +
+                " pls select number of seats for your bus");
+        int numOfSits = s.nextInt();
+        Bus bus = new Bus(licencePlate, numOfSits);
+        company.addBus(bus);
+
+        System.out.println("Now lets create a line, for a line we will need " +
+                "starting point, destination and and line number");
+        System.out.println("We will start in a starting point");
+        int startCityNum = selectCity();
+        Lines.city[] cities = Lines.city.values();
+        Lines.city startingPoint = cities[startCityNum - 1];
+        System.out.println("Lets choose destination");
+        int destinationNum = selectCity();
+        Lines.city destination = cities[destinationNum];
+        System.out.println("Great! Now lets choose a number for the line");
+        int lineNum = s.nextInt();
+        Lines line = new Lines(startingPoint, destination, lineNum);
+        company.addLine(line);
+
+        System.out.println("Almost done! now lets choose a date for our ride, please select a month");
+        int month = s.nextInt();
+        System.out.println("Select a day ");
+        int day = s.nextInt();
+        System.out.println("Tell me the hour");
+        int hour = s.nextInt();
+        System.out.println("What exact minutes do you want it to be?");
+        int minutes = s.nextInt();
+        Schedule date = new Schedule(day, month, hour, minutes);
+        company.addDate(date);
+
+        Ride ride = new Ride(line, bus, date);
+        company.addRide(ride);
+        System.out.println("WE ARE DONE!! The system has created the ride from the data you just created");
+        System.out.println("The id of your ride is "+ride.getId());
+        chooseTask();
+
+    }
+
+    //help function to select a city
+    private int selectCity() {
+        Scanner s = new Scanner(System.in);
+        System.out.println("Choose a number from the list");
+        System.out.println("1)Afula 2)Akko 3)Arad 4)Ashdod 5)Ashkelon 6)Bat_Yam 7)Beer_Sheva 8)Bet_Shean 9)Bnei_Brak\n" +
+                "10)Caecarea 11)Dimona 12)Dor 13)Elat 14)En_Gedi 15)Givataim 16)Hadera 17)Haifa 18)Herzeliyya\n" +
+                "19)Holon 20)Jerusalem 21)Karmiel 22)Kefar_Sava 23)Lod 24)Meron 25)Nehariyya 26)Nezareth 27)Netanya\n" +
+                "28)Petah_Tiqwa 29)Qiryat_Smona 30)Ramat_Gan 31)Ramla 32)Rehovot 33)Rishon_Lezion 34)Tel_Aviv_Yafo\n" +
+                "35)Tiberias 36)Zefat");
+        int ans = s.nextInt();
+        return ans;
+    }
+
+    private void delete(){
+        Scanner s = new Scanner(System.in);
+        System.out.println("Please choose 1 option:");
+        System.out.println("1) I want to delete a bus");
+        System.out.println("2) I want to delete a ride");
+        int selected;
+        do {
+            selected = s.nextInt();
+            s.nextLine();
+            if (selected < 0 || selected > 2) {
+                System.out.println("Invalid option");
+            }
+        } while (selected < 0 || selected > 2);
+        switch (selected){
+            case 1:
+                System.out.println("Please enter the licence plate you want to delete in a string format \"XX-XXX-XX\"");
+                String licence = s.nextLine();
+
+                company.removeBus(licence);
+                break;
+            case 2:
+                System.out.println("Please select the ride id you want to remove");
+                int id = s.nextInt();
+                company.removeRide(id);
+        }
+         
+        chooseTask();
+    }
+
+    //show all object selected
+    public void showAll(){
+        Scanner s = new Scanner(System.in);
+        System.out.println("Choose what you want to see\n");
+        System.out.println("1) Show all rides");
+        System.out.println("2) Show all bus");
+        System.out.println("3) Show all line");
+        System.out.println("4) Show all dates");
+        int selected;
+        do {
+            selected = s.nextInt();
+            if (selected < 0 || selected > 4) {
+                System.out.println("Invalid option");
+            }
+        } while (selected < 0 || selected > 4);
+        switch (selected){
+            case 1:
+                company.showRides();
+                break;
+            case 2:
+                company.showBus();
+                break;
+            case 3:
+                company.showLines();
+                break;
+            case 4:
+                company.showDate();
+                break;
+        }
+
+        chooseTask();
+    }
+    //Change ride or date
+    public void change(){
+        Scanner s = new Scanner(System.in);
+        System.out.println("Choose what you want to change");
+        System.out.println("1) To change a bus please enter 1");
+        System.out.println("2) To change a date and time select 2");
+        int selected;
+        do {
+            selected = s.nextInt();
+            s.nextLine();
+            if (selected < 0 || selected > 2) {
+                System.out.println("Invalid option");
+            }
+        } while (selected < 0 || selected > 2);
+        switch (selected){
+            case 1:
+                System.out.println("What ride you want to change?");
+                int rideId = s.nextInt();
+                System.out.println(company.getAllRides(rideId));
+                System.out.println("Enter bus position you want to put instead");
+                int busPosition=s.nextInt();
+                company.getAllRides(rideId).setBus(company.getAllBus()[busPosition]);
+                break;
+            case 2:
+                System.out.println("What ride you want to change?");
+                int rideId1 = s.nextInt();
+                System.out.println(company.getAllRides(rideId1));
+                s.nextLine();
+                System.out.println("please select a month");
+                int month = s.nextInt();
+                System.out.println("please select a day");
+                int day = s.nextInt();
+                System.out.println("please select a hour");
+                int hour = s.nextInt();
+                System.out.println("please select a minute");
+                int minutes = s.nextInt();
+                company.getAllRides(rideId1).getDate().setMonth(month);
+                company.getAllRides(rideId1).getDate().setDay(day);
+                company.getAllRides(rideId1).getDate().setHours(hour);
+                company.getAllRides(rideId1).getDate().setMinutes(minutes);
+                break;
+        }
+        
+        chooseTask();
+    }
+}
