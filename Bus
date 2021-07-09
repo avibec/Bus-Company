@@ -1,0 +1,37 @@
+public class Bus {
+	
+	private String licensePlate;
+	private int seat;
+	
+	public Bus(String licensePlate, int seat) {
+		setLicensePlate(licensePlate);
+		this.seat = seat;
+	}
+	public Bus(String licensePlate) {
+		this.licensePlate = licensePlate;
+		this.seat = 50;
+	}
+	
+	
+	public String toString() {
+		return "Bus licensePlate: " + licensePlate + " seat numbers: " + seat ;
+	}
+
+
+	
+	
+	public String getLicensePlate() {
+		return licensePlate;
+	}
+	public void setLicensePlate(String licensePlate) {
+		this.licensePlate = licensePlate;
+	}
+	
+	public int getSeat() {
+		return seat;
+	}
+	
+	public void setSeat(int seat) {
+		this.seat = seat;
+	}
+}
