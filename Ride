@@ -1,0 +1,51 @@
+
+public class Ride {
+	private Bus bus;
+    private Schedule date;
+    private Lines line;
+    private static int id = 0;
+    private int tempId;
+
+    public Ride(Lines line, Bus bus, Schedule date) {
+        this.line = line;
+        this.bus = bus;
+        this.date = date;
+        this.tempId = id++;
+    }
+   
+    
+   public Lines getLine() {
+       return line;
+    }
+
+    public void setLine(Lines line) {
+        this.line = line;
+    }
+
+    public Bus getBus() {
+        return bus;
+    }
+
+    public void setBus(Bus bus) {
+        this.bus = bus;
+    }
+
+    public Schedule getDate() {
+        return date;
+    }
+
+    public void setDate(Schedule date) {
+        this.date = date;
+    }
+    public int getId() {
+		return tempId;
+	}
+
+
+	public String toString() {
+        return 
+                 line + "\t" +
+                 bus + "\t" +
+                 date + " id: " + tempId;
+    } 
+}
